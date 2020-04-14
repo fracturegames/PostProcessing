@@ -270,6 +270,7 @@ struct VaryingsDefault
     float4 vertex : SV_POSITION;
     float2 texcoord : TEXCOORD0;
     float2 texcoordStereo : TEXCOORD1;
+    float2 texcoordBackground : TEXCOORD2;
 #if STEREO_INSTANCING_ENABLED
     uint stereoTargetEyeIndex : SV_RenderTargetArrayIndex;
 #endif
@@ -295,7 +296,7 @@ VaryingsDefault VertDefault(AttributesDefault v)
 }
 
 float4 _UVTransform; // xy: scale, wz: translate
-
+float4x4 _UnityDisplayTransform;
 #if STEREO_DOUBLEWIDE_TARGET
 float4 _PosScaleOffset; // xy: scale, wz: offset
 #endif
@@ -311,6 +312,13 @@ VaryingsDefault VertUVTransform(AttributesDefault v)
 #endif
     o.texcoord = TransformTriangleVertexToUV(v.vertex.xy) * _UVTransform.xy + _UVTransform.zw;
     o.texcoordStereo = TransformStereoScreenSpaceTex(o.texcoord, 1.0);
+    float texX = o.texcoordStereo.x;
+    float texY = o.texcoordStereo.y;
+    
+    o.texcoordBackground.x = (_UnityDisplayTransform[0].x * texX + _UnityDisplayTransform[1].x * (texY) + _UnityDisplayTransform[2].x);
+    o.texcoordBackground.y = (_UnityDisplayTransform[0].y * texX + _UnityDisplayTransform[1].y * (texY) + (_UnityDisplayTransform[2].y));
+    
+    
 #if STEREO_INSTANCING_ENABLED
     o.stereoTargetEyeIndex = (uint)_DepthSlice;
 #endif

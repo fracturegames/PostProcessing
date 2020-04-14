@@ -51,6 +51,10 @@ namespace UnityEngine.Rendering.PostProcessing
             TemporalAntialiasing
         }
 
+        public Matrix4x4 _DisplayMatrix;
+        public float _ContentOpacity = 1f;
+        public Texture2D _BackgroundTextureY;
+        public Texture2D _BackgroundTextureCbCr;
         /// <summary>
         /// This is transform that will be drive the volume blending feature. In some cases you may
         /// want to use a transform other than the camera, e.g. for a top down game you'll want the
@@ -440,13 +444,13 @@ namespace UnityEngine.Rendering.PostProcessing
             // We also need to force reset the non-jittered projection matrix here as it's not done
             // when ResetProjectionMatrix() is called and will break transparent rendering if TAA
             // is switched off and the FOV or any other camera property changes.
-
+/*
 #if UNITY_2018_2_OR_NEWER
             if (!m_Camera.usePhysicalProperties)
 #endif
                 m_Camera.ResetProjectionMatrix();
             m_Camera.nonJitteredProjectionMatrix = m_Camera.projectionMatrix;
-
+*/
 #if ENABLE_VR
             if (m_Camera.stereoEnabled)
             {
@@ -1215,6 +1219,12 @@ namespace UnityEngine.Rendering.PostProcessing
 
             if (isFinalPass)
             {
+                context.command.SetGlobalTexture("_BackgroundTexY", _BackgroundTextureY);
+                context.command.SetGlobalTexture("_BackgroundTexCbCr", _BackgroundTextureCbCr);
+                context.command.SetGlobalFloat("_ContentOpacity", _ContentOpacity);
+                context.command.SetGlobalMatrix("_UnityDisplayTransform",_DisplayMatrix);
+                var rtId = new RenderTargetIdentifier(BuiltinRenderTextureType.CameraTarget);
+                context.source = rtId;
                 uberSheet.EnableKeyword("FINALPASS");
                 dithering.Render(context);
                 ApplyFlip(context, uberSheet.properties);
