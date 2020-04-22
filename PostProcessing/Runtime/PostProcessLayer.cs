@@ -1223,8 +1223,10 @@ namespace UnityEngine.Rendering.PostProcessing
                 context.command.SetGlobalTexture("_BackgroundTexCbCr", _BackgroundTextureCbCr);
                 context.command.SetGlobalFloat("_ContentOpacity", _ContentOpacity);
                 context.command.SetGlobalMatrix("_UnityDisplayTransform",_DisplayMatrix);
+                #if UNITY_IOS
                 var rtId = new RenderTargetIdentifier(BuiltinRenderTextureType.CameraTarget);
                 context.source = rtId;
+#endif
                 uberSheet.EnableKeyword("FINALPASS");
                 dithering.Render(context);
                 ApplyFlip(context, uberSheet.properties);
