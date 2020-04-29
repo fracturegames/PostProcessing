@@ -1,9 +1,15 @@
 {
     "name": "Unity.Postprocessing.Runtime",
-    "references": [],
-    "optionalUnityReferences": [],
+    "references": [
+        "GUID:d4b6cc16af204ca43a73a887b03012b1"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
     "versionDefines": [
         {
             "name": "com.unity.render-pipelines.lightweight",
@@ -15,5 +21,6 @@
             "expression": "1.0.0",
             "define": "UNIVERSAL_1_0_0_OR_NEWER"
         }
-    ]
+    ],
+    "noEngineReferences": false
 }
